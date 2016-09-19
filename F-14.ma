@@ -1,6 +1,6 @@
 //Maya ASCII 2017 scene
 //Name: F-14.ma
-//Last modified: Mon, Sep 19, 2016 12:43:32 PM
+//Last modified: Mon, Sep 19, 2016 12:46:55 PM
 //Codeset: UTF-8
 requires maya "2017";
 currentUnit -l centimeter -a degree -t film;
@@ -13,8 +13,8 @@ fileInfo "license" "education";
 createNode transform -s -n "persp";
 	rename -uid "4C6B3429-954D-EFA9-FC31-CE8D86864211";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 28.177495445532251 21.13312158414919 28.177495445532251 ;
-	setAttr ".r" -type "double3" -27.938352729602379 44.999999999999972 -5.172681101354183e-14 ;
+	setAttr ".t" -type "double3" -0.73317746836048059 45.099952036988128 -0.090022873513518675 ;
+	setAttr ".r" -type "double3" -90.938352729596261 -276.99999999997686 -1.0439228086756482e-13 ;
 createNode camera -s -n "perspShape" -p "persp";
 	rename -uid "6E180F57-774C-E54C-699B-FD904256A049";
 	setAttr -k off ".v" no;
@@ -78,17 +78,28 @@ createNode camera -s -n "sideShape" -p "side";
 createNode transform -n "pCube1";
 	rename -uid "F499E4C0-314C-64AD-09B1-22AB8D8883E6";
 	setAttr ".t" -type "double3" 0 2.3841945727737768 0 ;
-	setAttr ".s" -type "double3" 2.121927450344026 2.121927450344026 2.121927450344026 ;
+	setAttr ".s" -type "double3" 10.490611539194157 3.2160704720584512 17.645366523703732 ;
 createNode mesh -n "pCubeShape1" -p "pCube1";
 	rename -uid "1EBB436C-7248-5E63-E93D-128FC49094D5";
 	setAttr -k off ".v";
 	setAttr ".vir" yes;
 	setAttr ".vif" yes;
+	setAttr ".pv" -type "double2" 0.5 0.4375 ;
 	setAttr ".uvst[0].uvsn" -type "string" "map1";
 	setAttr ".cuvs" -type "string" "map1";
 	setAttr ".dcc" -type "string" "Ambient+Diffuse";
 	setAttr ".covm[0]"  0 1 1;
 	setAttr ".cdvm[0]"  0 1 1;
+	setAttr -s 26 ".pt[0:25]" -type "float3"  0.2090366 0.011729185 0.15800861 
+		-0.2090366 0.011729185 0.15800861 0.2090366 -0.011729185 0.15800861 -0.2090366 -0.011729185 
+		0.15800861 0.18668295 0.053639375 0.13417338 -0.18668295 0.053639401 0.13417338 0.18668295 
+		-0.053639401 0.13417335 -0.18668295 -0.053639401 0.13417338 0.28219941 -0.015834399 
+		0.15800861 -0.25202191 0 0.13069047 0 -0.072413191 0.13069047 0.25202191 0 0.13069047 
+		-0.28219941 0.015834399 0.15800861 0.28219941 0.015834399 0.15800861 0 0.015834399 
+		0.15800861 -0.28219941 0 0.15800861 0 -0.015834399 0.15800861 0.28219941 0 0.15800861 
+		-0.28219941 -0.015834399 0.15800861 0 0.072413191 0.13069047 0 0 0.15800861 0 -0.021112558 
+		0.15800861 0 0 0.11472356 0 0.021112558 0.15800861 -0.37626582 0 0.15800861 0.37626582 
+		0 0.15800861;
 	setAttr ".ai_translator" -type "string" "polymesh";
 createNode lightLinker -s -n "lightLinker1";
 	rename -uid "2E72AF29-574F-DC18-6B7D-B496C78F01E6";
@@ -186,6 +197,15 @@ createNode script -n "sceneConfigurationScriptNode";
 createNode polyCube -n "polyCube1";
 	rename -uid "339D93F4-1949-A498-9EFC-5190B3757835";
 	setAttr ".cuv" 4;
+createNode polySmoothFace -n "polySmoothFace1";
+	rename -uid "22571CC7-6143-D6C9-E772-999DD7B1799E";
+	setAttr ".ics" -type "componentList" 1 "f[*]";
+	setAttr ".sdt" 2;
+	setAttr ".suv" yes;
+	setAttr ".ps" 0.10000000149011612;
+	setAttr ".ro" 1;
+	setAttr ".ma" yes;
+	setAttr ".m08" yes;
 select -ne :time1;
 	setAttr ".o" 1;
 	setAttr ".unw" 1;
@@ -214,13 +234,14 @@ select -ne :defaultResolution;
 select -ne :hardwareRenderGlobals;
 	setAttr ".ctrs" 256;
 	setAttr ".btrs" 512;
-connectAttr "polyCube1.out" "pCubeShape1.i";
+connectAttr "polySmoothFace1.out" "pCubeShape1.i";
 relationship "link" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "link" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialShadingGroup.message" ":defaultLightSet.message";
 relationship "shadowLink" ":lightLinker1" ":initialParticleSE.message" ":defaultLightSet.message";
 connectAttr "layerManager.dli[0]" "defaultLayer.id";
 connectAttr "renderLayerManager.rlmi[0]" "defaultRenderLayer.rlid";
+connectAttr "polyCube1.out" "polySmoothFace1.ip";
 connectAttr "defaultRenderLayer.msg" ":defaultRenderingList1.r" -na;
 connectAttr "pCubeShape1.iog" ":initialShadingGroup.dsm" -na;
 // End of F-14.ma
